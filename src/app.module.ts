@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './users/users.model';
 import { RoomsModule } from './rooms/rooms.module';
 import { ServicesModule } from './services/services.module';
 import { TariffsModule } from './tariffs/tariffs.module';
@@ -14,6 +13,8 @@ import { DepositsModule } from './deposits/deposits.module';
 import { DeponentsModule } from './deponents/deponents.module';
 import { VisitorsServicesModule } from './visitors_services/visitors_services.module';
 import { SessionsRoomsModule } from './sessions_rooms/sessions_rooms.module';
+import { RolesModule } from './roles/roles.module';
+import { UsersRolesModule } from './users_roles/users_roles.module';
 
 @Module({
   imports: [
@@ -27,8 +28,8 @@ import { SessionsRoomsModule } from './sessions_rooms/sessions_rooms.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User],
-      autoLoadModels: true, // Для создания моделей в базе данных на основе самих моделей
+      models: [],
+      autoLoadModels: true,
     }),
     UsersModule,
     RoomsModule,
@@ -42,8 +43,9 @@ import { SessionsRoomsModule } from './sessions_rooms/sessions_rooms.module';
     DeponentsModule,
     VisitorsServicesModule,
     SessionsRoomsModule,
+    RolesModule,
+    UsersRolesModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule { }

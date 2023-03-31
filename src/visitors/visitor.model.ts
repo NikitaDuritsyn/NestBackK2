@@ -1,16 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Client } from "src/clients/client.model";
 import { Deponent } from "src/deponents/deponents.model";
 import { Deposit } from "src/deposits/deposits.model";
+import { Service } from "src/services/services.model";
 import { Session } from "src/sessions/sessions.model";
 import { Tariff } from "src/tariffs/tariffs.model";
+import { VisitorService } from "src/visitors_services/visitors_services.model";
 
 interface VisitorCreationAttrs {
-    session_id: number
-    tariff_id: number
-    name: string
-    status: string
+    session_id: number;
+    tariff_id: number;
+    name: string;
+    status: string;
 }
 
 @Table({ tableName: 'visitors' })
@@ -22,37 +24,39 @@ export class Visitor extends Model<Visitor, VisitorCreationAttrs>{
     @ApiProperty({ example: 1, description: 'Visitor Session' })
     @ForeignKey(() => Session)
     @Column({ type: DataType.INTEGER, allowNull: false })
-    session_id: number
+    session_id: number;
 
     @ApiProperty({ example: 1, description: 'Visitor tariff' })
     @ForeignKey(() => Tariff)
     @Column({ type: DataType.INTEGER, allowNull: false })
-    tariff_id: number
+    tariff_id: number;
 
     @ApiProperty({ example: 1, description: 'Если есть номер то есть ссылка на клиента' })
     @ForeignKey(() => Client)
     @Column({ type: DataType.INTEGER })
-    client_id: number
+    client_id: number;
 
     @ApiProperty({ example: new Date, description: 'Время начала старта сессии для посетителя' })
     @Column({ type: DataType.DATE })
-    start_time_visitor: Date
+    start_time_visitor: Date;
 
     @ApiProperty({ example: new Date, description: 'Время конца старта сессии для посетителя' })
     @Column({ type: DataType.DATE })
-    end_time_visitor: Date
+    end_time_visitor: Date;
 
     @ApiProperty({ example: 'Nikita', description: 'Имя посетителя' })
     @Column({ type: DataType.STRING, allowNull: false })
-    name: string
+    name: string;
 
     @ApiProperty({ example: 'booked', description: 'Статус посетителя (booked/active/close/disactive)' })
     @Column({ type: DataType.STRING, allowNull: false })
-    status: string
+    status: string;
 
 
     @HasMany(() => Deponent)
-    Deponent: Deponent
+    Deponent: Deponent;
     @HasMany(() => Deposit)
-    Deposit: Deposit
+    Deposit: Deposit;
+    @BelongsToMany(() => Service, () => VisitorService)
+    Services: Service[];
 }

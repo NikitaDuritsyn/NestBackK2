@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
+import { Session } from "src/sessions/sessions.model";
+import { SessionRoom } from "src/sessions_rooms/sessions_rooms.model";
 
 interface RoomCreationAttrs {
     title: string;
@@ -19,4 +21,7 @@ export class Room extends Model<Room, RoomCreationAttrs>{
     @ApiProperty({example: '#ff00ff', description:'Цвет комнаты'})
     @Column({ type: DataType.STRING })
     color: string;
+    
+    @BelongsToMany(() => Session, () => SessionRoom)
+    Sessions: Session[]
 }

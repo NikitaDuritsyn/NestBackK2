@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
+import { Visitor } from "src/visitors/visitor.model";
+import { VisitorService } from "src/visitors_services/visitors_services.model";
 
 interface ServiceCreationAttrs {
     title: string;
@@ -20,4 +22,7 @@ export class Service extends Model<Service, ServiceCreationAttrs>{
     @ApiProperty({ example: 700, description: 'Цена за услугу' })
     @Column({ type: DataType.INTEGER, allowNull: false })
     price: number;
+
+    @BelongsToMany(() => Visitor, () => VisitorService)
+    Visitors: Visitor[];
 }

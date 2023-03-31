@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { Room } from "src/rooms/rooms.model";
+import { SessionRoom } from "src/sessions_rooms/sessions_rooms.model";
 import { Tariff } from "src/tariffs/tariffs.model";
 import { Visitor } from "src/visitors/visitor.model";
 
@@ -47,6 +49,7 @@ export class Session extends Model<Session, SessionCreationAttrs>{
 
     @HasMany(() => Visitor)
     Visitor: Visitor
-
+    @BelongsToMany(() => Room, () => SessionRoom)
+    Rooms: Room[]
 
 }

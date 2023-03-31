@@ -11,6 +11,9 @@ import { Room } from 'src/rooms/rooms.model';
   providers: [SessionsRoomsService],
   imports: [
     SequelizeModule.forFeature([SessionRoom, Session, Room])
+  ],
+  exports:[
+    SessionsRoomsService
   ]
 })
 export class SessionsRoomsModule { }

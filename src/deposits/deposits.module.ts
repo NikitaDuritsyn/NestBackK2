@@ -12,6 +12,9 @@ import { DepositsService } from './deposits.service';
   providers: [DepositsService],
   imports: [
     SequelizeModule.forFeature([Deposit, Client, Visitor, PaymentType])
+  ],
+  exports: [
+    DepositsService
   ]
 })
 export class DepositsModule { }

@@ -11,6 +11,9 @@ import { DeponentsService } from './deponents.service';
   providers: [DeponentsService],
   imports: [
     SequelizeModule.forFeature([Deponent, Client, Visitor])
+  ],
+  exports: [
+    DeponentsService
   ]
 })
 export class DeponentsModule { }

@@ -5,7 +5,7 @@ import { SessionRoom } from './sessions_rooms.model';
 import { CreateSessionRoomDto } from './dto/create-session_room.dto';
 
 @ApiTags('Комнаты сессии')
-@Controller('sessions-rooms')
+@Controller('/api')
 export class SessionsRoomsController {
     constructor(private sessionsRoomsService: SessionsRoomsService) { }
 

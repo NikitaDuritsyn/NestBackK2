@@ -28,9 +28,9 @@ export class Deponent extends Model<Deponent, DeponentCreationAttrs>{
 
     @ApiProperty({ example: 500, description: 'Deponent value' })
     @Column({ type: DataType.INTEGER, allowNull: false })
-    deponent_value: number
+    value: number
 
-    @ApiProperty({ example: 500, description: 'Deponent status (active/disactive)' })
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @ApiProperty({ example: 500, description: 'Deponent status (active/disactive)'})
+    @Column({ type: DataType.TEXT, allowNull: false })
     status: string
 }

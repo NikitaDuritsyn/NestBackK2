@@ -16,4 +16,9 @@ export class ClientsService {
         const clients = await this.clientRepostiry.findAll()
         return clients
     }
+
+    async getClientByPhone(phone: string) {
+        const clientByPhone = await this.clientRepostiry.findOne({ where: { number_phone: phone } })
+        return clientByPhone
+    }
 }

@@ -11,6 +11,7 @@ import { VisitorsService } from './visitors.service';
 import { Service } from 'src/services/services.model';
 import { DeponentsModule } from 'src/deponents/deponents.module';
 import { DepositsModule } from 'src/deposits/deposits.module';
+import { ClientsModule } from 'src/clients/clients.module';
 
 @Module({
   controllers: [VisitorsController],
@@ -18,7 +19,8 @@ import { DepositsModule } from 'src/deposits/deposits.module';
   imports: [
     SequelizeModule.forFeature([Visitor, Tariff, Session, Client, Deposit, Deponent, Service]),
     DeponentsModule,
-    DepositsModule
+    DepositsModule,
+    ClientsModule
   ],
   exports: [
     VisitorsService

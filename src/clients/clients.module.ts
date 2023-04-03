@@ -12,6 +12,7 @@ import { ClientsService } from './clients.service';
   providers: [ClientsService],
   imports: [
     SequelizeModule.forFeature([Client, Visitor, Deponent, Deposit])
-  ]
+  ],
+  exports: [ClientsService]
 })
 export class ClientsModule { }

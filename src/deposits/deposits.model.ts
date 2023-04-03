@@ -34,5 +34,5 @@ export class Deposit extends Model<Deposit, DepositsCreationAttrs>{
 
     @ApiProperty({ example: 1000, description: 'Deposit value' })
     @Column({ type: DataType.FLOAT, allowNull: false })
-    deposit_value: number
+    value: number
 }

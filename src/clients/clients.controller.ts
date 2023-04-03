@@ -18,11 +18,18 @@ export class ClientsController {
         return this.clientsService.createClient(clientDto)
     }
 
-    
+
     @ApiOperation({ summary: 'Получение всех клиентов' })
     @ApiResponse({ status: 200, type: [Client] })
     @Get('/get_clients')
     getAllClients() {
         return this.clientsService.getAllClients()
+    }
+
+    @ApiOperation({ summary: 'Получение всех клиентов' })
+    @ApiResponse({ status: 200, type: [Client] })
+    @Post('/get_client_by_phone')
+    getClientByPhone(@Body() body: any) {
+        return this.clientsService.getClientByPhone(body.number_phone)
     }
 }

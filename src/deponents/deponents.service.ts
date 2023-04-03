@@ -8,6 +8,7 @@ export class DeponentsService {
     constructor(@InjectModel(Deponent) private deponentRepostiry: typeof Deponent) { }
 
     async createDeponent(dto: CreateDeponentDto) {
+        dto.status = 'active'
         const deponent = await this.deponentRepostiry.create(dto)
         return deponent
     }

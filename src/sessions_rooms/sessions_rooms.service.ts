@@ -8,6 +8,7 @@ export class SessionsRoomsService {
     constructor(@InjectModel(SessionRoom) private sessionRoomRepository: typeof SessionRoom) { }
 
     async createSessionRoom(dto: CreateSessionRoomDto) {
+        console.log(dto);
         const sessionRoom = await this.sessionRoomRepository.create(dto);
         return sessionRoom
     }

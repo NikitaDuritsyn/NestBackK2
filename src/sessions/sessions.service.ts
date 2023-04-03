@@ -11,19 +11,24 @@ export class SessionsService {
 
     async createSession(dto: CreateSessionDto) {
         if (dto.visitors.length > 0) {
+            // Создаем запись для брони сессии
             const session = await this.sessionRepostiry.create(dto.session)
+            // console.log(session.dataValues);
+            // console.log(session.id);
 
+            // Создаем запись для каждого посетителя
             for (let i = 0; i < dto.visitors.length; i++) {
                 const visitorData = {
                     ...dto.visitors[i],
                     session_id: session.id,
                     tariff_id: session.tariff_id
                 }
-                await this.visitorService.createVisitor(visitorData);
+                const visitor = await this.visitorService.createVisitor(visitorData);
+                // console.log(visitor);
             }
-            
             for (let i = 0; i < dto.rooms.length; i++) {
-                await this.sessionsRoomsService.createSessionRoom({ session_id: session.id, room_id: dto.rooms[i] })
+                const sessionRoom = await this.sessionsRoomsService.createSessionRoom({ session_id: session.id, room_id: dto.rooms[i] })
+                // console.log(sessionRoom);
             }
 
             return session

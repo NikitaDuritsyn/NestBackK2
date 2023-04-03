@@ -5,6 +5,7 @@ import { Visitor } from './visitor.model';
 import { DepositsService } from 'src/deposits/deposits.service';
 import { DeponentsService } from 'src/deponents/deponents.service';
 import { ClientsService } from 'src/clients/clients.service';
+import { Client } from 'src/clients/client.model';
 
 @Injectable()
 export class VisitorsService {
@@ -49,7 +50,16 @@ export class VisitorsService {
         return visitors
     }
     async getVisitorsBySession(sessionId: number) {
-        const visitorsBySession = await this.visitorRepository.findAll({ where: { session_id: sessionId } });
+        const visitorsBySession = await this.visitorRepository.findAll({ where: { session_id: sessionId }, include:[{model:Client}] });
+        
+        // const [results, metadata] = await sequelize.query(`SELECT 
+        // visitors.id, visitors.session_id, visitors.tariff_id, visitors.client_id, visitors.start_time_visitor, visitors.end_time_visitor, visitors.name, visitors.status, 
+        // clients.number_phone
+        // FROM visitors 
+        // LEFT JOIN clients ON visitors.client_id = clients.id 
+        // WHERE visitors.session_id = ${sessionId};`);
+
+        visitorsBySession.sort((a, b) => a.id > b.id ? 1 : -1);
         return visitorsBySession
     }
 }

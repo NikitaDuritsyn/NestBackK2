@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get } from '@nestjs/common';
+import { Controller, Body, Post, Get, Param } from '@nestjs/common';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
@@ -21,7 +21,14 @@ export class VisitorsController {
     @ApiOperation({ summary: 'Получить всех посетителей' })
     @ApiResponse({ status: 200, type: [Visitor] })
     @Get('/get_visitors')
-    getAllUsers() {
+    getAllVisitors() {
         return this.visitorsService.getAllVisitors()
+    }
+
+    @ApiOperation({ summary: 'Получить всех посетителей' })
+    @ApiResponse({ status: 200, type: [Visitor] })
+    @Get('/get_visitors/:sessionId')
+    getVisitorsBySession(@Param('sessionId') sessionId: number) {
+        return this.visitorsService.getVisitorsBySession(sessionId)
     }
 }

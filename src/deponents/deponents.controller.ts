@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Body, Delete, Get, Param, Post } from '@nestjs/common/decorators';
+import { Body, Get, Post } from '@nestjs/common/decorators';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger/dist';
 import { ApiTags } from '@nestjs/swagger/dist/decorators';
 import { Deponent } from './deponents.model';

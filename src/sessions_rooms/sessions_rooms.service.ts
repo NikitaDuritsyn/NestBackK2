@@ -17,4 +17,9 @@ export class SessionsRoomsService {
         const sessionsRooms = await this.sessionRoomRepository.findAll();
         return sessionsRooms
     }
+
+    async getRoomsIdBySession(sessionsId) {
+        const roomsIdBySession = await this.sessionRoomRepository.findAll({ attributes: ['room_id'], where: { session_id: sessionsId } })
+        return roomsIdBySession
+    }
 }

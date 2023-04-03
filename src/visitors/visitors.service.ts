@@ -20,11 +20,6 @@ export class VisitorsService {
             if (client) {
                 visitor.update({ client_id: client.id })
 
-                console.log('-------------------');
-                console.log(dto.deponent.value);
-                console.log(dto.deposit.value);
-                console.log('-------------------');
-
                 if (dto.deponent) {
                     const deponentData = { ...dto.deponent, visitor_id: visitor.id, client_id: client.id }
                     await this.deponentsService.createDeponent(deponentData)
@@ -37,11 +32,6 @@ export class VisitorsService {
                 const newClientCreated = await this.clientsService.createClient(dto)
                 visitor.update({ client_id: newClientCreated.id })
 
-                console.log('-------------------');
-                console.log(dto.deponent.value);
-                console.log(dto.deposit.value);
-                console.log('-------------------');
-
                 if (dto.deponent.value) {
                     const deponentData = { ...dto.deponent, visitor_id: visitor.id, client_id: newClientCreated.id }
                     await this.deponentsService.createDeponent(deponentData)
@@ -52,12 +42,14 @@ export class VisitorsService {
                 }
             }
         }
-
-
         return visitor
     }
     async getAllVisitors() {
         const visitors = await this.visitorRepository.findAll();
         return visitors
+    }
+    async getVisitorsBySession(sessionId: number) {
+        const visitorsBySession = await this.visitorRepository.findAll({ where: { session_id: sessionId } });
+        return visitorsBySession
     }
 }

@@ -6,6 +6,8 @@ import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decora
 import { Visitor } from './visitor.model';
 import { VisitorsService } from './visitors.service';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
+import { UpdateStartTimeDto } from './dto/update-startTime.dto';
+import { UpdateEndTimeDto } from './dto/update-endTime.dto';
 
 @ApiTags('Посетители')
 @Controller('/api')
@@ -38,5 +40,19 @@ export class VisitorsController {
     @Post('/update_visitor')
     updateVisitor(@Body() VisitorDto: UpdateVisitorDto) {
         return this.visitorsService.updateVisitor(VisitorDto)
+    }
+
+    @ApiOperation({ summary: 'Обновление старта времени для пользователя в сессии' })
+    @ApiResponse({ status: 200, type: Visitor })
+    @Post('/start_time')
+    startTimeUpdateByVisitorsId(@Body() UpdateStartTimeDto: UpdateStartTimeDto) {
+        return this.visitorsService.updateStartTimeByVisitorsId(UpdateStartTimeDto)
+    }
+
+    @ApiOperation({ summary: 'Обновление конца времени для пользователя в сессии' })
+    @ApiResponse({ status: 200, type: Visitor })
+    @Post('/end_time')
+    endTimeUpdateByVisitorsId(@Body() UpdateEndTimeDto: UpdateEndTimeDto) {
+        return this.visitorsService.updateEndTimeByVisitorsId(UpdateEndTimeDto)
     }
 }

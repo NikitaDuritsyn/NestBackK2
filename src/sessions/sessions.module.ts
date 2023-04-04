@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Tariff } from 'src/tariffs/tariffs.model';
 import { Visitor } from 'src/visitors/visitor.model';
@@ -14,8 +14,11 @@ import { SessionsRoomsModule } from 'src/sessions_rooms/sessions_rooms.module';
   providers: [SessionsService],
   imports: [
     SequelizeModule.forFeature([Session, Tariff, Visitor, Room]),
-    VisitorsModule,
+    forwardRef(() => VisitorsModule),
     SessionsRoomsModule
+  ],
+  exports:[
+    SessionsService
   ]
 })
-export class SessionsModule {}
+export class SessionsModule { }

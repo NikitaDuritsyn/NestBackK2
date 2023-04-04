@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Client } from 'src/clients/client.model';
 import { Deponent } from 'src/deponents/deponents.model';
@@ -12,6 +12,7 @@ import { Service } from 'src/services/services.model';
 import { DeponentsModule } from 'src/deponents/deponents.module';
 import { DepositsModule } from 'src/deposits/deposits.module';
 import { ClientsModule } from 'src/clients/clients.module';
+import { SessionsModule } from 'src/sessions/sessions.module';
 
 @Module({
   controllers: [VisitorsController],
@@ -20,7 +21,8 @@ import { ClientsModule } from 'src/clients/clients.module';
     SequelizeModule.forFeature([Visitor, Tariff, Session, Client, Deposit, Deponent, Service]),
     DeponentsModule,
     DepositsModule,
-    ClientsModule
+    ClientsModule,
+    forwardRef(() => SessionsModule)
   ],
   exports: [
     VisitorsService

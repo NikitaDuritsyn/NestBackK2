@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { Session } from './sessions.model';
@@ -9,7 +9,9 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 
 @Injectable()
 export class SessionsService {
-    constructor(@InjectModel(Session) private sessionRepostiry: typeof Session,
+    constructor(
+        @InjectModel(Session) private sessionRepostiry: typeof Session,
+        @Inject(forwardRef(() => VisitorsService))
         private visitorService: VisitorsService,
         private sessionsRoomsService: SessionsRoomsService) { }
 
@@ -79,5 +81,6 @@ export class SessionsService {
     }
     async updateSession(dto: UpdateSessionDto) {
         const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: dto.id } })
+        return sessionUpdated
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { Visitor } from './visitor.model';
@@ -6,13 +6,20 @@ import { DepositsService } from 'src/deposits/deposits.service';
 import { DeponentsService } from 'src/deponents/deponents.service';
 import { ClientsService } from 'src/clients/clients.service';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
+import { SessionsService } from 'src/sessions/sessions.service';
+import { UpdateSessionDto } from 'src/sessions/dto/update-session.dto';
+import { UpdateStartTimeDto } from './dto/update-startTime.dto';
+import { UpdateEndTimeDto } from './dto/update-endTime.dto';
 
 @Injectable()
 export class VisitorsService {
     constructor(@InjectModel(Visitor) private visitorRepository: typeof Visitor,
         private depositsService: DepositsService,
         private deponentsService: DeponentsService,
-        private clientsService: ClientsService) { }
+        private clientsService: ClientsService,
+        @Inject(forwardRef(() => SessionsService))
+        private sessionsService: SessionsService,
+    ) { }
 
     async createVisitor(dto: CreateVisitorDto) {
         if (!dto.status) { dto.status = 'booked' }
@@ -66,29 +73,50 @@ export class VisitorsService {
         return visitor
     }
     async updateVisitor(dto: UpdateVisitorDto) {
-        if (dto.start_time_visitor) {
-            const visitorUpdated = await this.visitorRepository
-                .update({
-                    start_time_visitor: dto.start_time_visitor
-                }, {
-                    where: { id: dto.id }
-                })
-            const sessionStartTime = await this.visitorRepository
-                .findAll({
-                    attributes: ['start_time_visitor'],
-                    where: { session_id: dto.session_id },
-                    order: ['start_time_visitor', 'ASC'],
-                    limit: 1
-                })
+        const visitorUpdated = this.visitorRepository.update(dto, { where: { id: dto.id } })
+        return visitorUpdated
+    }
 
-            // await pool.query(`UPDATE visitors SET start_time_visitor = '${startTime}', status = 'active' WHERE id IN (${visitorsId})`) // ready
-            // const sessionStartTime = await pool.query(`SELECT start_time_visitor FROM visitors WHERE session_id = ${sessionId} ORDER BY start_time_visitor ASC LIMIT 1`) // ready
-            // const session = await pool.query(`UPDATE sessions SET start_time_session = '${new Date(sessionStartTime.rows[0].start_time_visitor).toISOString()}', status = 'active' WHERE id = $1 RETURNING *`, [sessionId]) // ready
-            // res.json(session.rows)
 
-        }
-        if (dto.end_time_visitor) {
+    async updateStartTimeByVisitorsId(dto: UpdateStartTimeDto) {
 
-        }
+        const visitorsUpdated = await this.visitorRepository
+            .update({
+                start_time_visitor: dto.startTime
+            }, {
+                where: { id: dto.visitorsId }
+            })
+
+        // const visitorUpdated = await this.visitorRepository
+        // .update({
+        //     start_time_visitor: dto.start_time_visitor
+        // }, {
+        //     where: { id: dto.id }
+        // })
+        // const sessionStartTime = await this.visitorRepository
+        //     .findAll({
+        //         attributes: ['start_time_visitor'],
+        //         where: { session_id: dto.session_id },
+        //         order: ['start_time_visitor', 'ASC'],
+        //         limit: 1
+        //     })
+        // console.log(sessionStartTime);
+
+        // const newSessionObject = {
+        //     ...UpdateSessionDto,
+        //     id: dto.session_id,
+        //     start_time_session: sessionStartTime
+        // }
+        // const sessionUpdated = await this.sessionsService.updateSession(newSessionObject)
+
+        // await pool.query(`UPDATE visitors SET start_time_visitor = '${startTime}', status = 'active' WHERE id IN (${visitorsId})`) // ready
+        // const sessionStartTime = await pool.query(`SELECT start_time_visitor FROM visitors WHERE session_id = ${sessionId} ORDER BY start_time_visitor ASC LIMIT 1`) // ready
+        // const session = await pool.query(`UPDATE sessions SET start_time_session = '${new Date(sessionStartTime.rows[0].start_time_visitor).toISOString()}', status = 'active' WHERE id = $1 RETURNING *`, [sessionId]) // ready
+        // res.json(session.rows)
+        return
+    }
+    async updateEndTimeByVisitorsId(dto: UpdateEndTimeDto) {
+
+        return
     }
 }

@@ -5,10 +5,13 @@ import { Session } from './sessions.model';
 import { VisitorsService } from 'src/visitors/visitors.service';
 import { SessionsRoomsService } from 'src/sessions_rooms/sessions_rooms.service';
 import { Op } from 'sequelize';
+import { UpdateSessionDto } from './dto/update-session.dto';
 
 @Injectable()
 export class SessionsService {
-    constructor(@InjectModel(Session) private sessionRepostiry: typeof Session, private visitorService: VisitorsService, private sessionsRoomsService: SessionsRoomsService) { }
+    constructor(@InjectModel(Session) private sessionRepostiry: typeof Session,
+        private visitorService: VisitorsService,
+        private sessionsRoomsService: SessionsRoomsService) { }
 
     async createSession(dto: CreateSessionDto) {
         // Проверку на пользователей и др пля перенести в midleWhere
@@ -30,12 +33,10 @@ export class SessionsService {
             return { massage: 'ERROR: Нужен хотябы один пользователь' }
         }
     }
-
     async getAllSessions() {
         const sessions = await this.sessionRepostiry.findAll()
         return sessions
     }
-
     async getSessionsByDays(days: number) {
         const sessionsArray = []
         const daysRange = days || 10
@@ -68,17 +69,15 @@ export class SessionsService {
         }
         return sessionsArray
     }
-
-    async getSessionById(id: number) {
-        const sessions = await this.sessionRepostiry.findAll()
-
-        return sessions
+    async getSessionById(sessionId: number) {
+        const session = await this.sessionRepostiry.findAll({ where: { id: sessionId } })
+        return session
     }
-
-    async deleteSessionById(id: number) {
-        const sessions = await this.sessionRepostiry.findAll()
-
-        return sessions
+    async deleteSessionById(sessionId: number) {
+        const sessionDeleted = await this.sessionRepostiry.destroy({ where: { id: sessionId } })
+        return sessionDeleted
     }
-
+    async updateSession(dto: UpdateSessionDto) {
+        const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: dto.id } })
+    }
 }

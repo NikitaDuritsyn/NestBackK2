@@ -15,11 +15,11 @@ export class Room extends Model<Room, RoomCreationAttrs>{
     id: number;
 
     @ApiProperty({example: 'Окно в небо 1', description:'Название комнаты'})
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     title: string;
 
     @ApiProperty({example: '#ff00ff', description:'Цвет комнаты'})
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.TEXT })
     color: string;
     
     @BelongsToMany(() => Session, () => SessionRoom)

@@ -15,11 +15,11 @@ export class PaymentType extends Model<PaymentType, PaymentTypeCreationAttrs>{
     id: number;
 
     @ApiProperty({ example: 'Наличая оплата', description: 'Название типа оплаты' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     title: string;
 
     @ApiProperty({ example: 'Cash', description: 'Тип оплаты' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     type: string;
 
     @HasMany(() => Deposit)

@@ -17,11 +17,11 @@ export class Tariff extends Model<Tariff, TariffCreationAttrs>{
     id: number;
 
     @ApiProperty({ example: 'По минутам', description: 'Название тарифа' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     title: string;
 
     @ApiProperty({ example: 'TimeBased', description: 'Метрики (TimeBased/Fixed)' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     metric: string;
 
     @ApiProperty({ example: 300, description: 'Продолжительность по времени в минутах (если Fixed например)' })

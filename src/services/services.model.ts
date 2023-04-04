@@ -16,7 +16,7 @@ export class Service extends Model<Service, ServiceCreationAttrs>{
     id: number;
 
     @ApiProperty({ example: 'Кальян', description: 'Название услуги' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     title: string;
 
     @ApiProperty({ example: 700, description: 'Цена за услугу' })

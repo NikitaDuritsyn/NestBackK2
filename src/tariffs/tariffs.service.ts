@@ -17,4 +17,10 @@ export class TariffsService {
         const tariffs = await this.tariffRepository.findAll();
         return tariffs
     }
+
+    async deleteTriffById(tariffId: number) {
+        const tariff = await this.tariffRepository.destroy({ where: { id: tariffId } })
+        return tariff
+
+    }
 }

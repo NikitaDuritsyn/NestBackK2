@@ -9,17 +9,17 @@ import { VisitorService } from './visitors_services.model';
 export class VisitorsServicesController {
     constructor(private visitorsServicesService: VisitorsServicesService) { }
 
-    @ApiOperation({summary: 'Создать услугу пользователя'})
-    @ApiResponse({status: 200, type: VisitorService})
+    @ApiOperation({ summary: 'Создать услугу пользователя' })
+    @ApiResponse({ status: 200, type: VisitorService })
     @Post('/create_visitor_service')
-    createVisitorService(@Body() visittorServiceDto: CreateVisitorServiceDto){
+    createVisitorService(@Body() visittorServiceDto: CreateVisitorServiceDto) {
         return this.visitorsServicesService.createVisitorService(visittorServiceDto)
     }
 
-    @ApiOperation({summary: 'Получить все услуги пользователей за все время'})
-    @ApiResponse({status: 200, type: [VisitorService]})
-    @Get('/visitors_services')
-    getAllVisitorsServices() {
-        return this.visitorsServicesService.getAllVisitorsServices()
+    @ApiOperation({ summary: 'Получить все услуги пользователей за все время' })
+    @ApiResponse({ status: 200, type: [VisitorService] })
+    @Post('/visitors_services')
+    getVisitorsServicesByVisitorsId(@Body() visitorsId: [number]) {
+        return this.visitorsServicesService.getVisitorsServicesByVisitorsId(visitorsId)
     }
 }

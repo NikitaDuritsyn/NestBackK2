@@ -39,7 +39,7 @@ export class Session extends Model<Session, SessionCreationAttrs>{
     end_time_session: Date;
 
     @ApiProperty({ example: 'booked', description: 'Session status "booked/active/close/disactive"' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     status: string;
 
     @ApiProperty({ example: 1, description: 'Session tariff' })

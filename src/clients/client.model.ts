@@ -16,19 +16,19 @@ export class Client extends Model<Client, ClientCreationAttrs>{
     id: number;
 
     @ApiProperty({ example: "Nikita", description: 'Client Name' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     name: string;
 
     @ApiProperty({ example: "Romanov", description: 'Client lastname' })
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.TEXT })
     lastname: string;
 
     @ApiProperty({ example: "79085060871", description: 'Client phone' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     number_phone: string;
 
     @ApiProperty({ example: "active", description: 'Client status (active/disactive)' })
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.TEXT })
     status: string;
 
     @HasMany(() => Visitor)

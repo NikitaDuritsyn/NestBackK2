@@ -12,8 +12,14 @@ export class VisitorsServicesService {
         return visitorService
     }
 
-    async getAllVisitorsServices() {
-        const visitorsServices = await this.visitorServiceRepository.findAll();
+    async getVisitorsServicesByVisitorsId(visitorsId: [number]) {
+        const [visitorsServices] = await this.visitorServiceRepository.sequelize
+            .query(`SELECT visitors_services.id, services.title, services.price, visitors.name 
+                    FROM visitors_services 
+                    JOIN services ON visitors_services.service_id=services.id 
+                    JOIN visitors ON visitors_services.visitor_id=visitors.id 
+                    WHERE visitors_services.visitor_id IN (${visitorsId})`)
         return visitorsServices
+
     }
 }

@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator'
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Visitor } from './visitor.model';
 import { VisitorsService } from './visitors.service';
+import { UpdateVisitorDto } from './dto/update-visitor.dto';
 
 @ApiTags('Посетители')
 @Controller('/api')
@@ -25,10 +26,17 @@ export class VisitorsController {
         return this.visitorsService.getAllVisitors()
     }
 
-    @ApiOperation({ summary: 'Получить всех посетителей' })
+    @ApiOperation({ summary: 'Получить всех посетителей сессии' })
     @ApiResponse({ status: 200, type: [Visitor] })
     @Get('/get_visitors/:sessionId')
     getVisitorsBySession(@Param('sessionId') sessionId: number) {
         return this.visitorsService.getVisitorsBySession(sessionId)
+    }
+
+    @ApiOperation({ summary: 'Обновление пользователя' })
+    @ApiResponse({ status: 200, type: Visitor })
+    @Post('/update_visitor')
+    updateVisitor(@Body() VisitorDto: UpdateVisitorDto) {
+        return this.visitorsService.updateVisitor(VisitorDto)
     }
 }

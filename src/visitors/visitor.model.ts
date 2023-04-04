@@ -45,11 +45,11 @@ export class Visitor extends Model<Visitor, VisitorCreationAttrs>{
     end_time_visitor: Date;
 
     @ApiProperty({ example: 'Nikita', description: 'Имя посетителя' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     name: string;
 
     @ApiProperty({ example: 'booked', description: 'Статус посетителя (booked/active/close/disactive)' })
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     status: string;
 
 

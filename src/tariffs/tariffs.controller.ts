@@ -1,4 +1,4 @@
-import { Post, Body, Controller, Get } from '@nestjs/common';
+import { Post, Body, Controller, Get, Param, Delete } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
@@ -24,5 +24,12 @@ export class TariffsController {
     @Get('/get_tariffs')
     getAllTariffs() {
         return this.tariffsService.getAllTariffs()
+    }
+
+    @ApiOperation({ summary: 'Удалить тариф' })
+    @ApiResponse({ status: 200, type: [Tariff] })
+    @Delete('/delete_tariff/:tariffId')
+    deleteTariffById(@Param('tariffId') tariffId: number) {
+        return this.tariffsService.deleteTriffById(tariffId)
     }
 }

@@ -5,9 +5,7 @@ import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator'
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Visitor } from './visitor.model';
 import { VisitorsService } from './visitors.service';
-import { UpdateVisitorDto } from './dto/update-visitor.dto';
-import { UpdateStartTimeDto } from './dto/update-startTime.dto';
-import { UpdateEndTimeDto } from './dto/update-endTime.dto';
+import { UpdateVisitorsDto } from './dto/update-visitors.dto';
 
 @ApiTags('Посетители')
 @Controller('/api')
@@ -20,6 +18,13 @@ export class VisitorsController {
     create(@Body() VisitorDto: CreateVisitorDto) {
         return this.visitorsService.createVisitor(VisitorDto)
     }
+
+    // @ApiOperation({ summary: 'Создание посетителя по id сессии' })
+    // @ApiResponse({ status: 200, type: Visitor })
+    // @Post('/create_visitor/:id')
+    // createVisitorBySession(@Param('id') sessionId: number) {
+    //     return this.visitorsService.createVisitorBySession(sessionId)
+    // }
 
     @ApiOperation({ summary: 'Получить всех посетителей' })
     @ApiResponse({ status: 200, type: [Visitor] })
@@ -35,24 +40,10 @@ export class VisitorsController {
         return this.visitorsService.getVisitorsBySession(sessionId)
     }
 
-    @ApiOperation({ summary: 'Обновление пользователя' })
+    @ApiOperation({ summary: 'Обновление данных нескольких пользователей' })
     @ApiResponse({ status: 200, type: Visitor })
-    @Post('/update_visitor')
-    updateVisitor(@Body() VisitorDto: UpdateVisitorDto) {
-        return this.visitorsService.updateVisitor(VisitorDto)
-    }
-
-    @ApiOperation({ summary: 'Обновление старта времени для пользователя в сессии' })
-    @ApiResponse({ status: 200, type: Visitor })
-    @Post('/start_time')
-    startTimeUpdateByVisitorsId(@Body() UpdateStartTimeDto: UpdateStartTimeDto) {
-        return this.visitorsService.updateStartTimeByVisitorsId(UpdateStartTimeDto)
-    }
-
-    @ApiOperation({ summary: 'Обновление конца времени для пользователя в сессии' })
-    @ApiResponse({ status: 200, type: Visitor })
-    @Post('/end_time')
-    endTimeUpdateByVisitorsId(@Body() UpdateEndTimeDto: UpdateEndTimeDto) {
-        return this.visitorsService.updateEndTimeByVisitorsId(UpdateEndTimeDto)
+    @Post('/update_visitors')
+    updateVisitor(@Body() VisitorsDto: UpdateVisitorsDto) {
+        return this.visitorsService.updateVisitors(VisitorsDto)
     }
 }

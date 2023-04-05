@@ -5,11 +5,8 @@ import { Visitor } from './visitor.model';
 import { DepositsService } from 'src/deposits/deposits.service';
 import { DeponentsService } from 'src/deponents/deponents.service';
 import { ClientsService } from 'src/clients/clients.service';
+import { UpdateVisitorsDto } from './dto/update-visitors.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
-import { SessionsService } from 'src/sessions/sessions.service';
-import { UpdateSessionDto } from 'src/sessions/dto/update-session.dto';
-import { UpdateStartTimeDto } from './dto/update-startTime.dto';
-import { UpdateEndTimeDto } from './dto/update-endTime.dto';
 
 @Injectable()
 export class VisitorsService {
@@ -17,8 +14,6 @@ export class VisitorsService {
         private depositsService: DepositsService,
         private deponentsService: DeponentsService,
         private clientsService: ClientsService,
-        @Inject(forwardRef(() => SessionsService))
-        private sessionsService: SessionsService,
     ) { }
 
     async createVisitor(dto: CreateVisitorDto) {
@@ -28,24 +23,22 @@ export class VisitorsService {
             const client = await this.clientsService.getClientByPhone(dto.number_phone)
             if (client) {
                 visitor.update({ client_id: client.id })
-
-                if (dto.deponent) {
+                if (dto.deponent?.value) {
                     const deponentData = { ...dto.deponent, visitor_id: visitor.id, client_id: client.id }
                     await this.deponentsService.createDeponent(deponentData)
                 }
-                if (dto.deposit) {
+                if (dto.deposit?.value) {
                     const depositData = { ...dto.deposit, visitor_id: visitor.id, client_id: client.id } // На фронте обязательно заполнять тип тарифа и Поменять на фронте "value" на "value"
                     await this.depositsService.createDeposit(depositData)
                 }
             } else {
                 const newClientCreated = await this.clientsService.createClient(dto)
                 visitor.update({ client_id: newClientCreated.id })
-
-                if (dto.deponent.value) {
+                if (dto.deponent?.value) {
                     const deponentData = { ...dto.deponent, visitor_id: visitor.id, client_id: newClientCreated.id }
                     await this.deponentsService.createDeponent(deponentData)
                 }
-                if (dto.deposit.value) {
+                if (dto.deposit?.value) {
                     const depositData = { ...dto.deposit, visitor_id: visitor.id, client_id: newClientCreated.id } // На фронте обязательно заполнять тип тарифа и Поменять на фронте "value" на "deposit_value"
                     await this.depositsService.createDeposit(depositData)
                 }
@@ -76,47 +69,30 @@ export class VisitorsService {
         const visitorUpdated = this.visitorRepository.update(dto, { where: { id: dto.id } })
         return visitorUpdated
     }
-
-
-    async updateStartTimeByVisitorsId(dto: UpdateStartTimeDto) {
-
-        const visitorsUpdated = await this.visitorRepository
-            .update({
-                start_time_visitor: dto.startTime
-            }, {
-                where: { id: dto.visitorsId }
-            })
-
-        // const visitorUpdated = await this.visitorRepository
-        // .update({
-        //     start_time_visitor: dto.start_time_visitor
-        // }, {
-        //     where: { id: dto.id }
-        // })
-        // const sessionStartTime = await this.visitorRepository
-        //     .findAll({
-        //         attributes: ['start_time_visitor'],
-        //         where: { session_id: dto.session_id },
-        //         order: ['start_time_visitor', 'ASC'],
-        //         limit: 1
-        //     })
-        // console.log(sessionStartTime);
-
-        // const newSessionObject = {
-        //     ...UpdateSessionDto,
-        //     id: dto.session_id,
-        //     start_time_session: sessionStartTime
-        // }
-        // const sessionUpdated = await this.sessionsService.updateSession(newSessionObject)
-
-        // await pool.query(`UPDATE visitors SET start_time_visitor = '${startTime}', status = 'active' WHERE id IN (${visitorsId})`) // ready
-        // const sessionStartTime = await pool.query(`SELECT start_time_visitor FROM visitors WHERE session_id = ${sessionId} ORDER BY start_time_visitor ASC LIMIT 1`) // ready
-        // const session = await pool.query(`UPDATE sessions SET start_time_session = '${new Date(sessionStartTime.rows[0].start_time_visitor).toISOString()}', status = 'active' WHERE id = $1 RETURNING *`, [sessionId]) // ready
-        // res.json(session.rows)
-        return
+    async updateVisitors(updateVisitors: UpdateVisitorsDto) {
+        const visitorsUpdated = await this.visitorRepository.update(updateVisitors.visitorUpdateData, { where: { id: updateVisitors.visitorsId } })
+        return visitorsUpdated
     }
-    async updateEndTimeByVisitorsId(dto: UpdateEndTimeDto) {
-
-        return
+    async getStartTimeSessionByVisitors(sessionId: number) {
+        const startTimeSession = await this.visitorRepository.findOne({ attributes: ['start_time_visitor'], where: { session_id: sessionId }, order: [['start_time_visitor', 'ASC']] })
+        return startTimeSession.dataValues.start_time_visitor
     }
+    async getEndTimeSessionByVisitors(sessionId: number) {
+        let valid = true
+
+        const visitors = await this.visitorRepository.findAll({ where: { session_id: sessionId }, attributes: ['end_time_visitor'] })
+        for (let i = 0; i < visitors.length; i++) {
+            if (!visitors[i].end_time_visitor) {
+                valid = false
+            }
+        }
+
+        if (valid) {
+            const endTimeSession = await this.visitorRepository.findOne({ attributes: ['end_time_visitor'], where: { session_id: sessionId }, order: [['end_time_visitor', 'DESC']] })
+            return endTimeSession.dataValues.end_time_visitor
+        } else {
+            return null
+        }
+    }
+
 }

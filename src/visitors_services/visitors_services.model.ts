@@ -16,11 +16,11 @@ export class VisitorService extends Model<VisitorService, VisitorServiceCreation
 
     @ApiProperty({ example: 1, description: 'Ссылка на id посетителя' })
     @ForeignKey(() => Visitor)
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: false, unique: false })
     visitor_id: number;
 
     @ApiProperty({ example: 1, description: 'Ссылка на id услуги' })
     @ForeignKey(() => Service)
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: false, unique: false })
     service_id: number;
 }

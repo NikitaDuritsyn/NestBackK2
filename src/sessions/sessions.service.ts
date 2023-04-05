@@ -11,7 +11,6 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 export class SessionsService {
     constructor(
         @InjectModel(Session) private sessionRepostiry: typeof Session,
-        @Inject(forwardRef(() => VisitorsService))
         private visitorService: VisitorsService,
         private sessionsRoomsService: SessionsRoomsService) { }
 
@@ -79,8 +78,22 @@ export class SessionsService {
         const sessionDeleted = await this.sessionRepostiry.destroy({ where: { id: sessionId } })
         return sessionDeleted
     }
-    async updateSession(dto: UpdateSessionDto) {
-        const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: dto.id } })
+    async updateSession(dto: UpdateSessionDto, sessionId: number) {
+        const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
         return sessionUpdated
+    }
+    async updateSessionStartTime(sessionId: number) {
+        const startTimeSession = await this.visitorService.getStartTimeSessionByVisitors(sessionId)
+        const sessionUpdated = await this.sessionRepostiry.update({ start_time_session: startTimeSession }, { where: { id: sessionId } })
+        return sessionUpdated
+    }
+    async updateSessionEndTime(sessionId: number) {
+        const endTimeSession = await this.visitorService.getEndTimeSessionByVisitors(sessionId)
+        console.log(endTimeSession);
+        if (endTimeSession) {
+            const sessionUpdated = await this.sessionRepostiry.update({ end_time_session: endTimeSession }, { where: { id: sessionId } })
+            return sessionUpdated
+        }
+        return null
     }
 }

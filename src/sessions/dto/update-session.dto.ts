@@ -1,9 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
 
 export class UpdateSessionDto {
-    @ApiProperty({ example: 1, description: 'PK unic indicate' })
-    id: number;
-
     @ApiProperty({ example: new Date, description: 'booked date for session' })
     booked_date: Date;
 

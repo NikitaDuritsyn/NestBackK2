@@ -14,10 +14,10 @@ import { SessionsRoomsModule } from 'src/sessions_rooms/sessions_rooms.module';
   providers: [SessionsService],
   imports: [
     SequelizeModule.forFeature([Session, Tariff, Visitor, Room]),
-    forwardRef(() => VisitorsModule),
+    VisitorsModule,
     SessionsRoomsModule
   ],
-  exports:[
+  exports: [
     SessionsService
   ]
 })

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table, Unique } from "sequelize-typescript";
 import { Client } from "src/clients/client.model";
 import { Deponent } from "src/deponents/deponents.model";
 import { Deposit } from "src/deposits/deposits.model";
@@ -52,11 +52,12 @@ export class Visitor extends Model<Visitor, VisitorCreationAttrs>{
     @Column({ type: DataType.TEXT, allowNull: false })
     status: string;
 
-
     @HasMany(() => Deponent)
     Deponent: Deponent;
+
     @HasMany(() => Deposit)
     Deposit: Deposit;
+
     @BelongsToMany(() => Service, () => VisitorService)
     Services: Service[];
 }

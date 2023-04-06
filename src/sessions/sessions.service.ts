@@ -84,14 +84,14 @@ export class SessionsService {
     }
     async updateSessionStartTime(sessionId: number) {
         const startTimeSession = await this.visitorService.getStartTimeSessionByVisitors(sessionId)
-        const sessionUpdated = await this.sessionRepostiry.update({ start_time_session: startTimeSession }, { where: { id: sessionId } })
+        const sessionUpdated = await this.sessionRepostiry.update({ start_time_session: startTimeSession, status: 'active' }, { where: { id: sessionId } })
         return sessionUpdated
     }
     async updateSessionEndTime(sessionId: number) {
         const endTimeSession = await this.visitorService.getEndTimeSessionByVisitors(sessionId)
         console.log(endTimeSession);
         if (endTimeSession) {
-            const sessionUpdated = await this.sessionRepostiry.update({ end_time_session: endTimeSession }, { where: { id: sessionId } })
+            const sessionUpdated = await this.sessionRepostiry.update({ end_time_session: endTimeSession, status: 'close' }, { where: { id: sessionId } })
             return sessionUpdated
         }
         return null

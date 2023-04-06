@@ -16,13 +16,10 @@ export class VisitorsService {
         private clientsService: ClientsService,
     ) { }
 
-    // createVisitorBySession()
     async createVisitor(dto: CreateVisitorDto, sessionId?: number) {
         if (!dto.status) { dto.status = 'booked' }
         if (sessionId) { dto.session_id = sessionId }
-
         const visitor = await this.visitorRepository.create(dto);
-        
         if (dto.number_phone) {
             const client = await this.clientsService.getClientByPhone(dto.number_phone)
             if (client) {
@@ -74,6 +71,12 @@ export class VisitorsService {
         return visitorUpdated
     }
     async updateVisitors(updateVisitors: UpdateVisitorsDto) {
+        if (updateVisitors.visitorUpdateData.start_time_visitor) {
+            updateVisitors.visitorUpdateData.status = 'active'
+        }
+        if (updateVisitors.visitorUpdateData.end_time_visitor) {
+            updateVisitors.visitorUpdateData.status = 'close'
+        }
         const visitorsUpdated = await this.visitorRepository.update(updateVisitors.visitorUpdateData, { where: { id: updateVisitors.visitorsId } })
         return visitorsUpdated
     }
@@ -98,5 +101,4 @@ export class VisitorsService {
             return null
         }
     }
-
 }

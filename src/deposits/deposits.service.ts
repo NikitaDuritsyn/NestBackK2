@@ -15,7 +15,7 @@ export class DepositsService {
 
     async createVisitorDeposits(dto: CreateDepositDto[]) {
         for (let i = 0; i < dto.length; i++) {
-            console.log(dto[i].payment_type_id);
+            console.log(dto[i]);
         }
         const deposits = await this.depositRepostiry.bulkCreate(dto)
         return deposits

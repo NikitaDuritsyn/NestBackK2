@@ -47,14 +47,6 @@ export class SessionsController {
         return this.sessionsServices.deleteSessionById(id)
     }
 
-    // @ApiOperation({ summary: 'Обновить данные сессии' })
-    // @ApiResponse({ status: 200, type: Session })
-    // @Post('/update_session/:id')
-    // updateSession(@Param('id') sessionId: number, @Body() sessionDto: UpdateSessionDto) {
-    //     return this.sessionsServices.updateSession(sessionDto, sessionId)
-    // }
-
-
     @ApiOperation({ summary: 'Обновить время начала сессии' })
     @ApiResponse({ status: 200, type: Session })
     @Get('/update_start_time_session/:id')

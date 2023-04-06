@@ -20,6 +20,6 @@ export class CreateVisitorDto {
     @ApiProperty({ example: { visitor_id: 2, deponent_value: 2, status: 'active', }, description: 'Не обязательное, депоНент посетителя для бронирования' })
     deponent: CreateDeponentDto
 
-    @ApiProperty({ example: { visitor_id: 1, paymet_type_id: 3, client_id: 2, deposit_value: 1000 }, description: 'Не обязательное, депоЗит посетителя для бронирования' })
+    @ApiProperty({ example: { visitor_id: 1, payment_type_id: 3, client_id: 2, deposit_value: 1000 }, description: 'Не обязательное, депоЗит посетителя для бронирования' })
     deposit: CreateDepositDto
 }

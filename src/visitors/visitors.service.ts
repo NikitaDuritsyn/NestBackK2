@@ -16,9 +16,13 @@ export class VisitorsService {
         private clientsService: ClientsService,
     ) { }
 
-    async createVisitor(dto: CreateVisitorDto) {
+    // createVisitorBySession()
+    async createVisitor(dto: CreateVisitorDto, sessionId?: number) {
         if (!dto.status) { dto.status = 'booked' }
+        if (sessionId) { dto.session_id = sessionId }
+
         const visitor = await this.visitorRepository.create(dto);
+        
         if (dto.number_phone) {
             const client = await this.clientsService.getClientByPhone(dto.number_phone)
             if (client) {

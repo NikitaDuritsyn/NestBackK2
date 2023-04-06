@@ -80,8 +80,8 @@ create TABLE deposits(
     id SERIAL PRIMARY KEY,
     visitor_id INTEGER NOT NULL,
     FOREIGN KEY (visitor_id) REFERENCES visitors (id),
-    paymet_type_id INTEGER NOT NULL,
-    FOREIGN KEY (paymet_type_id) REFERENCES payment_types (id),
+    payment_type_id INTEGER NOT NULL,
+    FOREIGN KEY (payment_type_id) REFERENCES payment_types (id),
     client_id INTEGER NOT NULL,
     FOREIGN KEY (client_id) REFERENCES clients (id),
     value FLOAT NOT NULL

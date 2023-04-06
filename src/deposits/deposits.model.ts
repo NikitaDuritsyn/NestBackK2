@@ -6,7 +6,7 @@ import { Visitor } from "src/visitors/visitor.model";
 
 interface DepositsCreationAttrs {
     visitor_id: number
-    paymet_type_id: number
+    payment_type_id: number
     client_id: number
     deposit_value: number
 }
@@ -25,7 +25,7 @@ export class Deposit extends Model<Deposit, DepositsCreationAttrs>{
     @ApiProperty({ example: 1, description: 'Deposit тип оплаты' })
     @ForeignKey(() => PaymentType)
     @Column({ type: DataType.INTEGER, allowNull: false })
-    paymet_type_id: number
+    payment_type_id: number
 
     @ApiProperty({ example: 1, description: 'Deposit client' })
     @ForeignKey(() => Client)

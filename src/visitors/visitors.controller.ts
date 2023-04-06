@@ -19,12 +19,12 @@ export class VisitorsController {
         return this.visitorsService.createVisitor(VisitorDto)
     }
 
-    // @ApiOperation({ summary: 'Создание посетителя по id сессии' })
-    // @ApiResponse({ status: 200, type: Visitor })
-    // @Post('/create_visitor/:id')
-    // createVisitorBySession(@Param('id') sessionId: number) {
-    //     return this.visitorsService.createVisitorBySession(sessionId)
-    // }
+    @ApiOperation({ summary: 'Создание посетителя по id сессии' })
+    @ApiResponse({ status: 200, type: Visitor })
+    @Post('/create_visitor/:id')
+    createVisitorBySession(@Body() VisitorDto: CreateVisitorDto, @Param('id') sessionId: number) {
+        return this.visitorsService.createVisitor(VisitorDto, sessionId)
+    }
 
     @ApiOperation({ summary: 'Получить всех посетителей' })
     @ApiResponse({ status: 200, type: [Visitor] })

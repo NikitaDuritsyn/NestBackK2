@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Deposit } from './deposits.model';
 import { CreateDepositDto } from './dto/create-deposit.dto';
-import { CreateVisitorDepositsDto } from './dto/create-visitor_deposits.dto';
 
 @Injectable()
 export class DepositsService {

@@ -71,8 +71,10 @@ export class SessionsService {
         return sessionsArray
     }
     async getSessionById(sessionId: number) {
-        const session = await this.sessionRepostiry.findAll({ where: { id: sessionId } })
-        return session
+        const session = await this.sessionRepostiry.findOne({ where: { id: sessionId } })
+        const rooms = await this.sessionsRoomsService.getRoomsIdBySession(sessionId)
+        const sessionData = { ...session.dataValues, session_rooms: rooms }
+        return sessionData
     }
     async deleteSessionById(sessionId: number) {
         const sessionDeleted = await this.sessionRepostiry.destroy({ where: { id: sessionId } })

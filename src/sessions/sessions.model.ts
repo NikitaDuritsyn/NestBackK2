@@ -5,15 +5,15 @@ import { SessionRoom } from "src/sessions_rooms/sessions_rooms.model";
 import { Tariff } from "src/tariffs/tariffs.model";
 import { Visitor } from "src/visitors/visitor.model";
 
-interface SessionCreationAttrs {
-    booked_date: Date;
-    estimate_session_duration: number;
-    status: string;
-    tariff_id: number;
-}
+// interface SessionCreationAttrs {
+//     booked_date: Date;
+//     estimate_session_duration: number;
+//     status: string;
+//     tariff_id: number;
+// }
 
 @Table({ tableName: 'sessions' })
-export class Session extends Model<Session, SessionCreationAttrs>{
+export class Session extends Model<Session>{
     @ApiProperty({ example: 1, description: 'PK unic indicate' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
@@ -51,5 +51,4 @@ export class Session extends Model<Session, SessionCreationAttrs>{
     Visitor: Visitor
     @BelongsToMany(() => Room, () => SessionRoom)
     Rooms: Room[]
-
 }

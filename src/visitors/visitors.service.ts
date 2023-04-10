@@ -7,6 +7,7 @@ import { DeponentsService } from 'src/deponents/deponents.service';
 import { ClientsService } from 'src/clients/clients.service';
 import { UpdateVisitorsDto } from './dto/update-visitors.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
+import { CreateSomeVisitorsDto } from './dto/create-somevisitors.dto';
 
 @Injectable()
 export class VisitorsService {
@@ -100,5 +101,27 @@ export class VisitorsService {
         } else {
             return null
         }
+    }
+    async deleteVisitorById(visitorId: number) {
+        const vsitiorDeleted = await this.visitorRepository.destroy({ where: { id: visitorId } })
+        return vsitiorDeleted
+    }
+    async createSomeVisitors(data: CreateSomeVisitorsDto) {
+        console.log('-------------------------------------');
+        const visitor = {
+            name: 'Anonymous',
+            session_id: data.session_id,
+            tariff_id: data.tariff_id,
+            status: 'booked'
+        }
+        const visitorArray = []
+        for (let i = 0; i < data.visitorsNum; i++) {
+            visitorArray.push(visitor)
+        }
+        console.log(visitorArray);
+        const visitorsCreated = await this.visitorRepository.bulkCreate(visitorArray);
+
+        console.log('-------------------------------------');
+        return visitorsCreated
     }
 }

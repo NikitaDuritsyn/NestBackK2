@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, Param } from '@nestjs/common';
+import { Controller, Body, Post, Get, Param, Delete } from '@nestjs/common';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
@@ -6,6 +6,7 @@ import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decora
 import { Visitor } from './visitor.model';
 import { VisitorsService } from './visitors.service';
 import { UpdateVisitorsDto } from './dto/update-visitors.dto';
+import { CreateSomeVisitorsDto } from './dto/create-somevisitors.dto';
 
 @ApiTags('Посетители')
 @Controller('/api')
@@ -45,5 +46,19 @@ export class VisitorsController {
     @Post('/update_visitors')
     updateVisitor(@Body() VisitorsDto: UpdateVisitorsDto) {
         return this.visitorsService.updateVisitors(VisitorsDto)
+    }
+
+    @ApiOperation({ summary: 'Удаление пользователя' })
+    @ApiResponse({ status: 200, type: Visitor })
+    @Delete('/delete_visitor/:id')
+    deleteVisitorById(@Param('id') visitorId: number) {
+        return this.visitorsService.deleteVisitorById(visitorId)
+    }
+
+    @ApiOperation({ summary: 'Создать несколько ананимных пользователей' })
+    @ApiResponse({ status: 200, type: Number })
+    @Post('/create_some_visitors')
+    createSomeVisitors(@Body() data: CreateSomeVisitorsDto) {
+        return this.visitorsService.createSomeVisitors(data)
     }
 }

@@ -1,12 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table, Unique } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, HasMany, Model, Table, Unique } from "sequelize-typescript";
 import { Client } from "src/clients/client.model";
 import { Deponent } from "src/deponents/deponents.model";
 import { Deposit } from "src/deposits/deposits.model";
-import { Service } from "src/services/services.model";
 import { Session } from "src/sessions/sessions.model";
 import { Tariff } from "src/tariffs/tariffs.model";
-import { VisitorService } from "src/visitors_services/visitors_services.model";
+import { VisitorServices } from "src/visitors_services/visitors_services.model";
 
 interface VisitorCreationAttrs {
     session_id: number;
@@ -58,6 +57,6 @@ export class Visitor extends Model<Visitor, VisitorCreationAttrs>{
     @HasMany(() => Deposit)
     Deposit: Deposit;
 
-    @BelongsToMany(() => Service, () => VisitorService)
-    Services: Service[];
+    @HasMany(() => VisitorServices)
+    visitorServices: VisitorServices[]
 }

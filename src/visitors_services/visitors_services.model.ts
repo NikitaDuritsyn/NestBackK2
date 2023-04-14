@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Service } from "src/services/services.model";
 import { Visitor } from "src/visitors/visitor.model";
 
@@ -9,7 +9,7 @@ interface VisitorServiceCreationAttrs {
 }
 
 @Table({ tableName: 'visitors_services' })
-export class VisitorService extends Model<VisitorService, VisitorServiceCreationAttrs>{
+export class VisitorServices extends Model<VisitorServices, VisitorServiceCreationAttrs>{
     @ApiProperty({ example: 1, description: 'PK unic indicate' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
@@ -23,4 +23,7 @@ export class VisitorService extends Model<VisitorService, VisitorServiceCreation
     @ForeignKey(() => Service)
     @Column({ type: DataType.INTEGER, allowNull: false, unique: false })
     service_id: number;
+
+    @BelongsTo(() => Service)
+    service: Service[]
 }

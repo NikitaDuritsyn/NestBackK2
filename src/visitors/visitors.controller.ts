@@ -61,4 +61,13 @@ export class VisitorsController {
     createSomeVisitors(@Body() data: CreateSomeVisitorsDto) {
         return this.visitorsService.createSomeVisitors(data)
     }
+
+
+    @ApiOperation({ summary: 'Получить все услуги посетителей за все время' })
+    @ApiResponse({ status: 200, type: [Visitor] })
+    @Post('/visitors_services')
+    VisitorsServices(@Body() visitorsId: number[]) {
+        return this.visitorsService.getVisitorsServices(visitorsId)
+    }
+
 }

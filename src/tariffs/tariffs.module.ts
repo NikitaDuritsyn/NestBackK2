@@ -11,6 +11,9 @@ import { Visitor } from 'src/visitors/visitor.model';
   controllers: [TariffsController],
   imports: [
     SequelizeModule.forFeature([Tariff, Session, Visitor])
+  ],
+  exports:[
+    TariffsService
   ]
 })
 export class TariffsModule { }

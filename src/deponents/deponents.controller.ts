@@ -31,4 +31,11 @@ export class DeponentsController {
     getDeponentsByVisitorsId(@Body() visitorsId: []) {
         return this.deponentsService.getDeponentsByVisitorsId(visitorsId)
     }
+
+    // @ApiOperation({ summary: 'Использование депонента посетителем' })
+    // @ApiResponse({ status: 200, type: Deponent })
+    // @Post('/use_deponent')
+    // useDeponent(@Body() deponentDto: CreateDeponentDto) {
+    //     return this.deponentsService.createDeponent(deponentDto)
+    // }
 }

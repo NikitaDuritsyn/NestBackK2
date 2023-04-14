@@ -5,13 +5,6 @@ import { SessionRoom } from "src/sessions_rooms/sessions_rooms.model";
 import { Tariff } from "src/tariffs/tariffs.model";
 import { Visitor } from "src/visitors/visitor.model";
 
-// interface SessionCreationAttrs {
-//     booked_date: Date;
-//     estimate_session_duration: number;
-//     status: string;
-//     tariff_id: number;
-// }
-
 @Table({ tableName: 'sessions' })
 export class Session extends Model<Session>{
     @ApiProperty({ example: 1, description: 'PK unic indicate' })

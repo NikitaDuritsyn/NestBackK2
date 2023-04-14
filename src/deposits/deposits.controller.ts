@@ -6,6 +6,7 @@ import { Deposit } from './deposits.model';
 import { DepositsService } from './deposits.service';
 import { CreateDepositDto } from './dto/create-deposit.dto';
 import { CreateVisitorDepositsDto } from './dto/create-visitor_deposits.dto';
+import { createVisitorsDepositsDto } from './dto/create-visitors-deposits.dto';
 
 @ApiTags('Депозиты')
 @Controller('/api')
@@ -40,4 +41,10 @@ export class DepositsController {
         return this.depositsService.createVisitorDeposits(visitorDepostisDto)
     }
 
+    @ApiOperation({ summary: 'Создание депозитов посетителей' })
+    @ApiResponse({ status: 200, type: createVisitorsDepositsDto })
+    @Post('/create_visitors_deposits')
+    createVisitorsDeposits(@Body() createVisitorsDepositsDto: createVisitorsDepositsDto) {
+        return this.depositsService.createVisitorsDeposits(createVisitorsDepositsDto)
+    }
 }

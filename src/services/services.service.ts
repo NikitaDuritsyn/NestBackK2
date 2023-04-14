@@ -18,6 +18,12 @@ export class ServicesService {
         return service
     }
 
+    async getServiceByServicesId(servicesId: number[]) {
+        const service = await this.serviceRepository.findAll({ where: { id: servicesId } })
+        return service
+    }
+
+
     async getAllServices() {
         const services = await this.serviceRepository.findAll()
         return services

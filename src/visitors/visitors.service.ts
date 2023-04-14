@@ -1,4 +1,4 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { Visitor } from './visitor.model';
@@ -8,15 +8,21 @@ import { ClientsService } from 'src/clients/clients.service';
 import { UpdateVisitorsDto } from './dto/update-visitors.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
 import { CreateSomeVisitorsDto } from './dto/create-somevisitors.dto';
+import { Service } from 'src/services/services.model';
+import { VisitorServices } from 'src/visitors_services/visitors_services.model';
 
 @Injectable()
 export class VisitorsService {
     constructor(@InjectModel(Visitor) private visitorRepository: typeof Visitor,
+        @Inject(forwardRef(() => DepositsService))
         private depositsService: DepositsService,
         private deponentsService: DeponentsService,
         private clientsService: ClientsService,
     ) { }
-
+    async getVisitorsById(visitorsId: number[]) {
+        const visitors = await this.visitorRepository.findAll({ where: { id: visitorsId } });
+        return visitors
+    }
     async createVisitor(dto: CreateVisitorDto, sessionId?: number) {
         if (!dto.status) { dto.status = 'booked' }
         if (sessionId) { dto.session_id = sessionId }
@@ -123,5 +129,27 @@ export class VisitorsService {
 
         console.log('-------------------------------------');
         return visitorsCreated
+    }
+
+
+    async getVisitorsServices(visitorsId: number[]) {
+        const visitorsServices = await this.visitorRepository.findAll({
+            where: { id: visitorsId },
+            include: [
+                {
+                    model: VisitorServices,
+                    attributes: ['id'],
+                    required: true,
+                    include: [
+                        {
+                            model: Service,
+                            required: true,
+                            attributes: ['price', 'title'],
+                        }
+                    ]
+                }],
+            attributes: ['name']
+        });
+        return visitorsServices
     }
 }

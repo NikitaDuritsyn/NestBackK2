@@ -39,31 +39,60 @@ export class DepositsService {
         return deposits
     }
     async createVisitorsDeposits(dto: createVisitorsDepositsDto) {
-        console.log('payer: ', dto.payer);
-        console.log('visitors: ', dto.visitors);
-        console.log('deposits: ', dto.deposits);
-
-        // В данном случае просто создём депозиты по данному пользователю и все.
-        const deposits = []
-        for (let i = 0; i < dto.deposits.length; i++) {
-            const deposit = dto.deposits[i];
-            deposits.push({
-                visitor_id: dto.payer.id,
-                payment_type_id: deposit.payment_type_id,
-                client_id: dto.payer.client_id,
-                value: deposit.value
-            })
-        }
+        const tariffs = await this.tariffsService.getAllTariffs()
+        const payer = await this.visitorsService.getVisitorById(dto.payer.id)
+        const deposits = dto.deposits.map(deposit => ({
+            visitor_id: dto.payer.id,
+            payment_type_id: deposit.payment_type_id,
+            client_id: dto.payer.client_id,
+            value: deposit.value
+        }));
         console.log(deposits);
-        console.log('depositsSumm: ', deposits.reduce((acc, item) => acc + item.value, 0));
+        let payerCurrentDepositsSumm = deposits.reduce((acc, item) => acc + item.value, 0)
+        console.log('depositsSumm: ', payerCurrentDepositsSumm);
+
+        const payerTariff = tariffs.filter((item) => { return (item.id === payer.tariff_id) ? true : false; })[0]
+        if (payer.start_time_visitor && payer.end_time_visitor) {
+            // Разница в минутах начала и конца веремени для посетителя 
+            const deifferencePayerTime = Math.ceil((new Date(payer.end_time_visitor).getTime() - new Date(payer.start_time_visitor).getTime()) / 60000)
+            // Сумма которую нужно заплатить за тариф
+            const payerTariffPayment = SetVisitorTariffPayment(payerTariff, deifferencePayerTime)
+            // Сумма которую нужно заплатить за все услги
+            const payerServicesPayment = (await this.visitorsService
+                .getVisitorsServices([payer.id]))[0]?.visitorServices
+                .reduce((acc, item) => acc + item.service['price'], 0)
+            // Общая сумма депозитов внесенная посетителем (депозиты)
+            const payerDepositsSumm = (await this
+                .getDepositsByVisitorId(payer.id))
+                .reduce((acc, item) => acc + item.value, 0)
+
+            const paymentDebt = (payerServicesPayment) ? payerServicesPayment + payerTariffPayment : payerTariffPayment - payerDepositsSumm
+
+            console.log('---------------------------------------------------------------');
+            console.log('payerId:', payer.id)
+            console.log('ДОЛГ:', paymentDebt);
+            // А ОТ СУММЫ ВНЕСЕННОЙ СЕЧАС ОТНИМАЕМ ЕГО ПОСЧИТАННЫЙ ДОЛГ
+            payerCurrentDepositsSumm = payerCurrentDepositsSumm - paymentDebt
+
+            // console.log('---------------------------------------------------------------');
+            // console.log(payerDepositsSumm, '?=', (payerServicesPayment) ? payerServicesPayment + payerTariffPayment : payerTariffPayment, 'summ', payerTariffPayment, 'за тариф', '+', (payerServicesPayment) ? payerServicesPayment : 0, 'за услуги');
+            // console.log('---------------------------------------------------------------');
+
+        } else if (payer.start_time_visitor && !payer.end_time_visitor) {
+            // const deifferenceVisitorTime = Math.ceil((new Date().getTime() - new Date(visitor.start_time_visitor).getTime()) / 60000)
+            // const visitorTariffPayment = SetVisitorTariffPayment(visitorTariff, deifferenceVisitorTime)
+            // const visitorDepositsSumm = (await this.getDepositsByVisitorId(visitor.id)).reduce((acc, item) => acc + item.value, 0)
+        }
+        // ВНОСИМ ДЕПОЗИТЫ PAYERа
         // const payerDeposits = await this.createVisitorDeposits(deposits)
+        console.log('Остататок после погашения долга', payerCurrentDepositsSumm);
+
 
 
         // СНАЧАЛА НУЖНО РАСЧИТАТЬСЯ С ПЛАТЕЛЬЩИКОМ ПОТОМ С ОСТАЛЬНЫМИ => МОЖНО ВНЕСТИ ЕГО В СПИСОК ПОЛЬЗОВАТЕЛЕЙ НО ПО INDEX 0!!!! ИНАЧЕ ПОЛУЧАЕТСЯ МНОГО КОДА (СДЕЛАНО НУЖНО ПОТЕСТИТЬ)
         if (dto.visitors.length > 0) {
             console.log('-------------------------------------------------------------');
             // Алгоритм для случая если кто-то решил расплатиться за всех 
-            const tariffs = await this.tariffsService.getAllTariffs()
             const visitors = await this.visitorsService.getVisitorsById(dto.visitors.map(item => item.id))
             for (let i = 0; i < visitors.length; i++) {
                 const visitor = visitors[i];
@@ -99,6 +128,8 @@ export class DepositsService {
                 }
             }
             console.log('-------------------------------------------------------------');
+            return 0
+        } else {
             return 0
         }
 

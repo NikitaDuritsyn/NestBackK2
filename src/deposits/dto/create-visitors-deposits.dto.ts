@@ -3,6 +3,9 @@ import { Deposit } from "../deposits.model";
 import { Visitor } from "src/visitors/visitor.model";
 
 export class createVisitorsDepositsDto {
+    @ApiProperty({ example: Visitor, description: 'id и client_id посетителя который платит за всех' })
+    payer: Visitor
+
     @ApiProperty({ example: [Visitor], description: '' })
     visitors: Visitor[]
 

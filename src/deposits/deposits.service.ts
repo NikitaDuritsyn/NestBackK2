@@ -38,29 +38,33 @@ export class DepositsService {
         const deposits = await this.depositRepostiry.findAll({ where: { visitor_id: visitorId } })
         return deposits
     }
-
-
-
     async createVisitorsDeposits(dto: createVisitorsDepositsDto) {
-        console.log(dto);
-        if (dto.visitors.length === 1) {
-            // В данном случае просто создём депозиты по данному пользователю и все.
-            const deposits = []
-            for (let i = 0; i < dto.deposits.length; i++) {
-                const deposit = dto.deposits[i];
-                deposits.push({
-                    visitor_id: dto.visitors[0].id, payment_type_id: deposit.payment_type_id,
-                    client_id: dto.visitors[0].client_id, value: deposit.value
-                })
-            }
-            const visitorDeposits = await this.createVisitorDeposits(deposits)
-            return visitorDeposits
-        } else if (dto.visitors.length > 1) {
+        console.log('payer: ', dto.payer);
+        console.log('visitors: ', dto.visitors);
+        console.log('deposits: ', dto.deposits);
+
+        // В данном случае просто создём депозиты по данному пользователю и все.
+        const deposits = []
+        for (let i = 0; i < dto.deposits.length; i++) {
+            const deposit = dto.deposits[i];
+            deposits.push({
+                visitor_id: dto.payer.id,
+                payment_type_id: deposit.payment_type_id,
+                client_id: dto.payer.client_id,
+                value: deposit.value
+            })
+        }
+        console.log(deposits);
+        console.log('depositsSumm: ', deposits.reduce((acc, item) => acc + item.value, 0));
+        // const payerDeposits = await this.createVisitorDeposits(deposits)
+
+
+        // СНАЧАЛА НУЖНО РАСЧИТАТЬСЯ С ПЛАТЕЛЬЩИКОМ ПОТОМ С ОСТАЛЬНЫМИ => МОЖНО ВНЕСТИ ЕГО В СПИСОК ПОЛЬЗОВАТЕЛЕЙ НО ПО INDEX 0!!!! ИНАЧЕ ПОЛУЧАЕТСЯ МНОГО КОДА (СДЕЛАНО НУЖНО ПОТЕСТИТЬ)
+        if (dto.visitors.length > 0) {
             console.log('-------------------------------------------------------------');
             // Алгоритм для случая если кто-то решил расплатиться за всех 
             const tariffs = await this.tariffsService.getAllTariffs()
             const visitors = await this.visitorsService.getVisitorsById(dto.visitors.map(item => item.id))
-
             for (let i = 0; i < visitors.length; i++) {
                 const visitor = visitors[i];
                 const visitorTariff = tariffs.filter((item) => { return (item.id === visitor.tariff_id) ? true : false; })[0]
@@ -88,13 +92,10 @@ export class DepositsService {
                     console.log(visitorDepositsSumm, '?=', (visitorServicesPayment) ? visitorServicesPayment + visitorTariffPayment : visitorTariffPayment, 'summ', visitorTariffPayment, 'за тариф', '+', (visitorServicesPayment) ? visitorServicesPayment : 0, 'за услуги');
                     console.log('---------------------------------------------------------------');
 
-
-
                 } else if (visitor.start_time_visitor && !visitor.end_time_visitor) {
                     // const deifferenceVisitorTime = Math.ceil((new Date().getTime() - new Date(visitor.start_time_visitor).getTime()) / 60000)
                     // const visitorTariffPayment = SetVisitorTariffPayment(visitorTariff, deifferenceVisitorTime)
                     // const visitorDepositsSumm = (await this.getDepositsByVisitorId(visitor.id)).reduce((acc, item) => acc + item.value, 0)
-
                 }
             }
             console.log('-------------------------------------------------------------');
@@ -112,5 +113,4 @@ export class DepositsService {
         }
 
     }
-
 }

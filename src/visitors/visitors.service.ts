@@ -66,7 +66,7 @@ export class VisitorsService {
                 FROM visitors LEFT JOIN clients ON visitors.client_id = clients.id 
                 WHERE visitors.session_id = ${sessionId};`);
 
-        visitorsBySession.sort((a, b) => a['name'] > b['name'] ? 1 : -1);
+        visitorsBySession.sort((a, b) => a['id'] > b['id'] ? 1 : -1);
         return visitorsBySession
     }
     async getVisitorById(visitorId: number) {
@@ -81,9 +81,9 @@ export class VisitorsService {
         if (updateVisitors.visitorUpdateData.start_time_visitor) {
             updateVisitors.visitorUpdateData.status = 'active'
         }
-        if (updateVisitors.visitorUpdateData.end_time_visitor) {
-            updateVisitors.visitorUpdateData.status = 'close'
-        }
+        // if (updateVisitors.visitorUpdateData.end_time_visitor) {
+        //     updateVisitors.visitorUpdateData.status = 'close'
+        // }
         const visitorsUpdated = await this.visitorRepository.update(updateVisitors.visitorUpdateData, { where: { id: updateVisitors.visitorsId } })
         return visitorsUpdated
     }
@@ -130,8 +130,6 @@ export class VisitorsService {
         console.log('-------------------------------------');
         return visitorsCreated
     }
-
-
     async getVisitorsServices(visitorsId: number[]) {
         const visitorsServices = await this.visitorRepository.findAll({
             where: { id: visitorsId },

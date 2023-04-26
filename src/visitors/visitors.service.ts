@@ -81,9 +81,6 @@ export class VisitorsService {
         if (updateVisitors.visitorUpdateData.start_time_visitor) {
             updateVisitors.visitorUpdateData.status = 'active'
         }
-        // if (updateVisitors.visitorUpdateData.end_time_visitor) {
-        //     updateVisitors.visitorUpdateData.status = 'close'
-        // }
         const visitorsUpdated = await this.visitorRepository.update(updateVisitors.visitorUpdateData, { where: { id: updateVisitors.visitorsId } })
         return visitorsUpdated
     }

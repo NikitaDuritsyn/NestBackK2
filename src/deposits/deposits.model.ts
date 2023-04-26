@@ -29,7 +29,7 @@ export class Deposit extends Model<Deposit, DepositsCreationAttrs>{
 
     @ApiProperty({ example: 1, description: 'Deposit client' })
     @ForeignKey(() => Client)
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: true })
     client_id: number
 
     @ApiProperty({ example: 1000, description: 'Deposit value' })

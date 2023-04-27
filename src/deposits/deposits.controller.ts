@@ -44,7 +44,7 @@ export class DepositsController {
     @ApiOperation({ summary: 'Создание депозитов посетителей' })
     @ApiResponse({ status: 200, type: createVisitorsDepositsDto })
     @Post('/create_visitors_deposits')
-    createVisitorsDeposits(@Body() createVisitorsDepositsDto: createVisitorsDepositsDto) {
+    createVisitorsDepositsAndCloseVisitors(@Body() createVisitorsDepositsDto: createVisitorsDepositsDto) {
         return this.depositsService.createVisitorsDeposits(createVisitorsDepositsDto)
     }
 }

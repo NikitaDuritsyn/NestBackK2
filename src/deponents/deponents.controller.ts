@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger/dist/decorators';
 import { Deponent } from './deponents.model';
 import { DeponentsService } from './deponents.service';
 import { CreateDeponentDto } from './dto/create-deponent.dto';
+import { UpdateDeponentDto } from './dto/update-deponent.dto';
 
 @ApiTags('Депоненты')
 @Controller('/api')
@@ -32,10 +33,10 @@ export class DeponentsController {
         return this.deponentsService.getDeponentsByVisitorsId(visitorsId)
     }
 
-    // @ApiOperation({ summary: 'Использование депонента посетителем' })
-    // @ApiResponse({ status: 200, type: Deponent })
-    // @Post('/use_deponent')
-    // useDeponent(@Body() deponentDto: CreateDeponentDto) {
-    //     return this.deponentsService.createDeponent(deponentDto)
-    // }
+    @ApiOperation({ summary: 'Использование депонента посетителеми/посетителем' })
+    @ApiResponse({ status: 200, type: Deponent })
+    @Post('/use_deponent')
+    useDeponents(@Body() useDeponentsDto: [UpdateDeponentDto]) {
+        return this.deponentsService.useDeponents(useDeponentsDto)
+    }
 }

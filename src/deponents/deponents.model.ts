@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
 import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Client } from "src/clients/client.model";
+import { PaymentType } from "src/payment_types/payment_types.model";
 import { Visitor } from "src/visitors/visitor.model";
 
 interface DeponentCreationAttrs {
@@ -20,6 +21,11 @@ export class Deponent extends Model<Deponent, DeponentCreationAttrs>{
     @ForeignKey(() => Visitor)
     @Column({ type: DataType.INTEGER, allowNull: false })
     visitor_id: number
+
+    @ApiProperty({ example: 1, description: 'Deposit тип оплаты' })
+    @ForeignKey(() => PaymentType)
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    payment_type_id: number
 
     @ApiProperty({ example: 1, description: 'Deponent client (если есть)' })
     @ForeignKey(() => Client)

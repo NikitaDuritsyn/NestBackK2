@@ -10,6 +10,9 @@ import { PaymentTypesService } from './payment_types.service';
   providers: [PaymentTypesService],
   imports: [
     SequelizeModule.forFeature([PaymentType, Deposit])
+  ],
+  exports:[
+    PaymentTypesService
   ]
 })
 export class PaymentTypesModule { }

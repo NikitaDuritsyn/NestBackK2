@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { Deponent } from "src/deponents/deponents.model";
 import { Deposit } from "src/deposits/deposits.model";
 
 interface PaymentTypeCreationAttrs {
@@ -24,4 +25,6 @@ export class PaymentType extends Model<PaymentType, PaymentTypeCreationAttrs>{
 
     @HasMany(() => Deposit)
     Deposit: Deposit
+    @HasMany(() => Deponent)
+    Deponent: Deposit
 }

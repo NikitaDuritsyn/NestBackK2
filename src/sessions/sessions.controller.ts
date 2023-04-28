@@ -60,4 +60,11 @@ export class SessionsController {
     updateSessionEndTime(@Param('id') id: number) {
         return this.sessionsServices.updateSessionEndTime(id)
     }
+
+    @ApiOperation({ summary: 'Обновить время конца сессии' })
+    @ApiResponse({ status: 200, type: Session })
+    @Post('/update_session/:id')
+    updateSession(@Param('id') id: number, @Body() sessionData: UpdateSessionDto) {
+        return this.sessionsServices.updateSession(sessionData, id)
+    }
 }

@@ -81,6 +81,9 @@ export class SessionsService {
         return sessionDeleted
     }
     async updateSession(dto: UpdateSessionDto, sessionId: number) {
+        console.log(dto);
+        console.log(sessionId);
+        
         const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
         return sessionUpdated
     }

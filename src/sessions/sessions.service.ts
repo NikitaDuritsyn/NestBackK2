@@ -14,8 +14,31 @@ export class SessionsService {
         private visitorService: VisitorsService,
         private sessionsRoomsService: SessionsRoomsService) { }
 
+    isOverlapping(start1: Date, end1: Date, start2: Date, end2: Date) {
+        return new Date(start1).getTime() < new Date(end2).getTime() && new Date(start2).getTime() < new Date(end1).getTime();
+    }
+    async checkOverlap(dto: CreateSessionDto) {
+        const startDate = new Date(new Date(dto.session.booked_date).setHours(0, 0, 0, 0))
+        const endDate = new Date(new Date(new Date().setDate(new Date(dto.session.booked_date).getDate() + 1)).setHours(0, 0, 0, 0))
+        const sessionsBookedThisDay = await this.getSessionsByDates(startDate, endDate)
+        const newSessionBookedStartTime = dto.session.booked_date
+        const newSessionBookedEndTime = new Date(new Date(dto.session.booked_date).setTime(new Date(dto.session.booked_date).getTime() + dto.session.estimate_session_duration * 60000));
+        for (let i = 0; i < sessionsBookedThisDay.length; i++) {
+            const sessionBookedStartTime = sessionsBookedThisDay[i].booked_date;
+            const sessionBookedEndTime = new Date(new Date(sessionsBookedThisDay[i].booked_date).setTime(new Date(sessionsBookedThisDay[i].booked_date).getTime() + sessionsBookedThisDay[i].estimate_session_duration * 60000));
+            const sessionBookedRooms = await this.sessionsRoomsService.getRoomsIdBySession(sessionsBookedThisDay[i].id)
+
+            if (this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime) && dto.rooms.every(value => sessionBookedRooms.map(item => item.dataValues.room_id).includes(value))) {
+                return true;
+            }
+        }
+        return false;
+    }
     async createSession(dto: CreateSessionDto) {
-        // Проверку на пользователей и др пля перенести в midleWhere
+        const checkOverlapSessions = await this.checkOverlap(dto)
+        if (checkOverlapSessions) {
+            return { massage: 'Сессия не может быть создана, происходит наложение по времени' }
+        }
         if (dto.visitors.length > 0) {
             const session = await this.sessionRepostiry.create(dto.session)
             for (let i = 0; i < dto.visitors.length; i++) {
@@ -29,7 +52,7 @@ export class SessionsService {
             for (let i = 0; i < dto.rooms.length; i++) {
                 await this.sessionsRoomsService.createSessionRoom({ session_id: session.id, room_id: dto.rooms[i] })
             }
-            return session
+            return { massage: 'Сессия создана' }
         } else {
             return { massage: 'ERROR: Нужен хотябы один пользователь' }
         }
@@ -38,18 +61,23 @@ export class SessionsService {
         const sessions = await this.sessionRepostiry.findAll()
         return sessions
     }
-    async getSessionsByDays(days: number) {
-        const sessionsArray = []
-        const daysRange = days || 10
-        const startDate = new Date(new Date(new Date().setDate(new Date().getDate() - 2)).setHours(0, 0, 0, 0)).toISOString()
-        const endDate = new Date(new Date(new Date().setDate(new Date().getDate() + Number(daysRange) - 2)).setHours(0, 0, 0, 0)).toISOString()
+    async getSessionsByDates(startDate: Date, endDate: Date) {
         const sessions = await this.sessionRepostiry.findAll({
             where: {
                 booked_date: {
-                    [Op.between]: [startDate, endDate],
+                    [Op.between]: [startDate.toISOString(), endDate.toISOString()],
                 },
             }
         })
+        return sessions
+    }
+    async getSessionsByDays(days: number) {
+        const sessionsArray = []
+        const daysRange = days || 10
+        const startDate = new Date(new Date(new Date().setDate(new Date().getDate() - 2)).setHours(0, 0, 0, 0))
+        const endDate = new Date(new Date(new Date().setDate(new Date().getDate() + Number(daysRange) - 2)).setHours(0, 0, 0, 0))
+        const sessions = await this.getSessionsByDates(startDate, endDate)
+
         for (let i = 0; i < sessions.length; i++) {
             const session = {
                 ...sessions[i].dataValues,
@@ -83,7 +111,7 @@ export class SessionsService {
     async updateSession(dto: UpdateSessionDto, sessionId: number) {
         console.log(dto);
         console.log(sessionId);
-        
+
         const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
         return sessionUpdated
     }

@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateSessionDto } from './dto/create-session.dto';
+import { BookedSessionDto } from './dto/booked-session.dto';
 import { Session } from './sessions.model';
 import { VisitorsService } from 'src/visitors/visitors.service';
 import { SessionsRoomsService } from 'src/sessions_rooms/sessions_rooms.service';
 import { Op } from 'sequelize';
 import { UpdateSessionDto } from './dto/update-session.dto';
+import { CreateSessionDto } from './dto/create-session.dto';
 
 @Injectable()
 export class SessionsService {
@@ -17,25 +18,36 @@ export class SessionsService {
     isOverlapping(start1: Date, end1: Date, start2: Date, end2: Date) {
         return new Date(start1).getTime() < new Date(end2).getTime() && new Date(start2).getTime() < new Date(end1).getTime();
     }
-    async checkOverlap(dto: CreateSessionDto) {
-        const startDate = new Date(new Date(dto.session.booked_date).setHours(0, 0, 0, 0))
-        const endDate = new Date(new Date(new Date().setDate(new Date(dto.session.booked_date).getDate() + 1)).setHours(0, 0, 0, 0))
-        const sessionsBookedThisDay = await this.getSessionsByDates(startDate, endDate)
-        const newSessionBookedStartTime = dto.session.booked_date
-        const newSessionBookedEndTime = new Date(new Date(dto.session.booked_date).setTime(new Date(dto.session.booked_date).getTime() + dto.session.estimate_session_duration * 60000));
+
+    async checkOverlap(dto: CreateSessionDto, rooms: number[], sessionId?: number) {
+        const startDate = new Date(new Date(dto.booked_date).setHours(0, 0, 0, 0))
+        const endDate = new Date(new Date(new Date().setDate(new Date(dto.booked_date).getDate() + 1)).setHours(0, 0, 0, 0))
+        let sessionsBookedThisDay = (await this.getSessionsByDates(startDate, endDate)).map(item => item.dataValues)
+        if (sessionId) { sessionsBookedThisDay = sessionsBookedThisDay.filter(item => item.id != sessionId) }
+
+        const newSessionBookedStartTime = dto.booked_date
+        const newSessionBookedEndTime = new Date(new Date(dto.booked_date).setTime(new Date(dto.booked_date).getTime() + dto.estimate_session_duration * 60000));
+
         for (let i = 0; i < sessionsBookedThisDay.length; i++) {
             const sessionBookedStartTime = sessionsBookedThisDay[i].booked_date;
             const sessionBookedEndTime = new Date(new Date(sessionsBookedThisDay[i].booked_date).setTime(new Date(sessionsBookedThisDay[i].booked_date).getTime() + sessionsBookedThisDay[i].estimate_session_duration * 60000));
             const sessionBookedRooms = await this.sessionsRoomsService.getRoomsIdBySession(sessionsBookedThisDay[i].id)
 
-            if (this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime) && dto.rooms.every(value => sessionBookedRooms.map(item => item.dataValues.room_id).includes(value))) {
-                return true;
+            if (rooms.every(value => sessionBookedRooms.map(item => item.dataValues.room_id).includes(value))) {
+
+                console.log(sessionsBookedThisDay[i].id, sessionId);
+                console.log(new Date(newSessionBookedStartTime).toLocaleTimeString(), newSessionBookedEndTime.toLocaleTimeString(), sessionBookedStartTime.toLocaleTimeString(), sessionBookedEndTime.toLocaleTimeString());
+                console.log(this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime));
+
+                if (this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime)) {
+                    return true;
+                }
             }
         }
         return false;
     }
-    async createSession(dto: CreateSessionDto) {
-        const checkOverlapSessions = await this.checkOverlap(dto)
+    async bookedSession(dto: BookedSessionDto) {
+        const checkOverlapSessions = await this.checkOverlap(dto.session, dto.rooms)
         if (checkOverlapSessions) {
             return { massage: 'Сессия не может быть создана, происходит наложение по времени' }
         }
@@ -109,9 +121,11 @@ export class SessionsService {
         return sessionDeleted
     }
     async updateSession(dto: UpdateSessionDto, sessionId: number) {
-        console.log(dto);
-        console.log(sessionId);
-
+        const rooms = (await this.sessionsRoomsService.getRoomsIdBySession(sessionId)).map(item => item.room_id)
+        const checkOverlapSessions = await this.checkOverlap(dto, rooms, sessionId)
+        if (checkOverlapSessions) {
+            return { massage: 'Сессия не может быть смещена, происходит наложение по времени' }
+        }
         const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
         return sessionUpdated
     }
@@ -122,7 +136,6 @@ export class SessionsService {
     }
     async updateSessionEndTime(sessionId: number) {
         const endTimeSession = await this.visitorService.getEndTimeSessionByVisitors(sessionId)
-        console.log(endTimeSession);
         if (endTimeSession) {
             const sessionUpdated = await this.sessionRepostiry.update({ end_time_session: endTimeSession, status: 'close' }, { where: { id: sessionId } })
             return sessionUpdated

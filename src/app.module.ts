@@ -30,6 +30,7 @@ import { UsersRolesModule } from './users_roles/users_roles.module';
       database: process.env.POSTGRES_DB,
       models: [],
       autoLoadModels: true,
+      logging: false, // для тогоа чтобы не писал мне лям запросов 
     }),
     UsersModule,
     RoomsModule,

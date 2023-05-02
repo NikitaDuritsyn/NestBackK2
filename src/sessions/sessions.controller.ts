@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { Body, Delete, Get, Param, Post } from '@nestjs/common/decorators';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger/dist';
 import { ApiTags } from '@nestjs/swagger/dist/decorators';
-import { CreateSessionDto } from './dto/create-session.dto';
+import { BookedSessionDto } from './dto/booked-session.dto';
 import { Session } from './sessions.model';
 import { SessionsService } from './sessions.service';
 import { UpdateSessionDto } from './dto/update-session.dto';
@@ -15,8 +15,8 @@ export class SessionsController {
     @ApiOperation({ summary: 'Создание сессии' })
     @ApiResponse({ status: 200, type: Session })
     @Post('/create_session')
-    createSession(@Body() sessionDto: CreateSessionDto) {
-        return this.sessionsServices.createSession(sessionDto)
+    bookedSession(@Body() sessionDto: BookedSessionDto) {
+        return this.sessionsServices.bookedSession(sessionDto)
     }
 
     @ApiOperation({ summary: 'Получить все сессии' })

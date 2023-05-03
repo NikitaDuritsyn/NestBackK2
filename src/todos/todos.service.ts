@@ -41,7 +41,6 @@ export class TodosService {
             return updatedAt < todayStart || updatedAt > todayEnd;
         });
 
-        console.log(tasksToUpdate);
         for (const task of tasksToUpdate) {
             await this.todoRepository.update({ done: false }, { where: { id: task.id } });
         }

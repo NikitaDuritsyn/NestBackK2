@@ -15,6 +15,7 @@ import { VisitorsServicesModule } from './visitors_services/visitors_services.mo
 import { SessionsRoomsModule } from './sessions_rooms/sessions_rooms.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users_roles/users_roles.module';
+import { TodosModule } from './todos/todos.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { UsersRolesModule } from './users_roles/users_roles.module';
     SessionsRoomsModule,
     RolesModule,
     UsersRolesModule,
+    TodosModule,
   ],
   controllers: [],
 })

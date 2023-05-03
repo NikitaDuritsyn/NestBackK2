@@ -18,30 +18,19 @@ export class SessionsService {
     isOverlapping(start1: Date, end1: Date, start2: Date, end2: Date) {
         return new Date(start1).getTime() < new Date(end2).getTime() && new Date(start2).getTime() < new Date(end1).getTime();
     }
-
     async checkOverlap(dto: CreateSessionDto, rooms: number[], sessionId?: number) {
         const startDate = new Date(new Date(dto.booked_date).setHours(0, 0, 0, 0))
         const endDate = new Date(new Date(new Date().setDate(new Date(dto.booked_date).getDate() + 1)).setHours(0, 0, 0, 0))
-        let sessionsBookedThisDay = (await this.getSessionsByDates(startDate, endDate)).map(item => item.dataValues)
+        let sessionsBookedThisDay = (await this.getSessionsByDates(startDate, endDate)).map(item => item.dataValues).filter(item => item.status != 'delete')
         if (sessionId) { sessionsBookedThisDay = sessionsBookedThisDay.filter(item => item.id != sessionId) }
-
         const newSessionBookedStartTime = dto.booked_date
         const newSessionBookedEndTime = new Date(new Date(dto.booked_date).setTime(new Date(dto.booked_date).getTime() + dto.estimate_session_duration * 60000));
-
         for (let i = 0; i < sessionsBookedThisDay.length; i++) {
             const sessionBookedStartTime = sessionsBookedThisDay[i].booked_date;
             const sessionBookedEndTime = new Date(new Date(sessionsBookedThisDay[i].booked_date).setTime(new Date(sessionsBookedThisDay[i].booked_date).getTime() + sessionsBookedThisDay[i].estimate_session_duration * 60000));
             const sessionBookedRooms = await this.sessionsRoomsService.getRoomsIdBySession(sessionsBookedThisDay[i].id)
-
-            if (rooms.every(value => sessionBookedRooms.map(item => item.dataValues.room_id).includes(value))) {
-
-                console.log(sessionsBookedThisDay[i].id, sessionId);
-                console.log(new Date(newSessionBookedStartTime).toLocaleTimeString(), newSessionBookedEndTime.toLocaleTimeString(), sessionBookedStartTime.toLocaleTimeString(), sessionBookedEndTime.toLocaleTimeString());
-                console.log(this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime));
-
-                if (this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime)) {
-                    return true;
-                }
+            if (rooms.every(value => sessionBookedRooms.map(item => item.dataValues.room_id).includes(value)) && this.isOverlapping(newSessionBookedStartTime, newSessionBookedEndTime, sessionBookedStartTime, sessionBookedEndTime)) {
+                return true;
             }
         }
         return false;
@@ -124,10 +113,10 @@ export class SessionsService {
         const rooms = (await this.sessionsRoomsService.getRoomsIdBySession(sessionId)).map(item => item.room_id)
         const checkOverlapSessions = await this.checkOverlap(dto, rooms, sessionId)
         if (checkOverlapSessions) {
-            return { massage: 'Сессия не может быть смещена, происходит наложение по времени' }
+            return { error: 'Сессия не может быть смещена, происходит наложение по времени' }
         }
-        const sessionUpdated = await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
-        return sessionUpdated
+        await this.sessionRepostiry.update(dto, { where: { id: sessionId } })
+        return { massage: `Сессия изменена` }
     }
     async updateSessionStartTime(sessionId: number) {
         const startTimeSession = await this.visitorService.getStartTimeSessionByVisitors(sessionId)

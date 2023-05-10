@@ -10,12 +10,12 @@ export class UsersService {
 
     async createUser(dto: CreateUserDto) {
         const user = await this.userRepository.create(dto);
-        return user
+        return { massage: `Пользователь ${user.name}, создан` }
     }
 
     async getAllUsers() {
         const users = await this.userRepository.findAll();
         return users
     }
-    
+
 }

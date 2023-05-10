@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger/dist/decorators";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Role } from "src/roles/roles.model";
 import { User } from "src/users/users.model";
 
@@ -24,4 +24,10 @@ export class UserRole extends Model<UserRole, UserRoleCreationAttrs>{
     @ForeignKey(() => Role)
     @Column({ type: DataType.INTEGER, allowNull: false })
     role_id: number;
+
+    @BelongsTo(() => User)
+    user: User;
+
+    @BelongsTo(() => Role)
+    role: Role;
 }

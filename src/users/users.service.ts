@@ -38,7 +38,7 @@ export class UsersService {
     }
 
     async getAllUsers() {
-        const users = await User.findAll({
+        const users = await this.userRepository.findAll({
             include: [{
                 model: Role,
                 through: {
@@ -46,7 +46,16 @@ export class UsersService {
                 }
             }]
         });
-        return users;
+        return users.sort((a, b) => a.id - b.id);
     }
 
+    async udapteUser(userData: CreateUserDto, userId: number) {
+        const user = await this.userRepository.update(userData, { where: { id: userId } });
+        return { user, massage: 'Пользователь изменен' }
+    }
+
+    async deleteUser(userId: number) {
+        const user = await this.userRepository.destroy({ where: { id: userId } });
+        return { user, massage: 'Пользователь изменен' }
+    }
 }

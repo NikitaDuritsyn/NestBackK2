@@ -8,14 +8,14 @@ export class CreateUserDto {
     lastname: string
 
     @ApiProperty({ example: 'kodtochka32@gmail.com', description: 'user email' })
-    readonly email: string;
+    email: string;
 
     @ApiProperty({ example: 'IsJA#1@d#$1Zz2T', description: 'user email' })
-    readonly password: string;
+    password: string;
 
     @ApiProperty({ example: '79085060871', description: 'user phone' })
-    readonly phone: string;
+    phone: string;
 
     @ApiProperty({ example: [1, 2, 3, 4], description: 'user roleId' })
-    readonly roles_id: [number];
+    roles_id: [number];
 }

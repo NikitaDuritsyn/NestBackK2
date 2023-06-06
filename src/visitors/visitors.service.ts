@@ -86,6 +86,7 @@ export class VisitorsService {
     }
     async getStartTimeSessionByVisitors(sessionId: number) {
         const startTimeSession = await this.visitorRepository.findOne({ attributes: ['start_time_visitor'], where: { session_id: sessionId }, order: [['start_time_visitor', 'ASC']] })
+        console.log(startTimeSession);
         return startTimeSession.dataValues.start_time_visitor
     }
     async getEndTimeSessionByVisitors(sessionId: number) {

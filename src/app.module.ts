@@ -16,6 +16,9 @@ import { SessionsRoomsModule } from './sessions_rooms/sessions_rooms.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users_roles/users_roles.module';
 import { TodosModule } from './todos/todos.module';
+import { CategoriesModule } from './categories/categories.module';
+import { SubCategoriesModule } from './sub-categories/sub-categories.module';
+import { ProductModule } from './product/products.module';
 
 @Module({
   imports: [
@@ -48,6 +51,9 @@ import { TodosModule } from './todos/todos.module';
     RolesModule,
     UsersRolesModule,
     TodosModule,
+    CategoriesModule,
+    SubCategoriesModule,
+    ProductModule,
   ],
   controllers: [],
 })

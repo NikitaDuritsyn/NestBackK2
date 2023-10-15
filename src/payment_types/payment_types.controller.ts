@@ -27,8 +27,8 @@ export class PaymentTypesController {
 
     @ApiOperation({ summary: 'Удалить тип оплаты' })
     @ApiResponse({ status: 200, type: PaymentType })
-    @Delete('/delete_payment_type')
+    @Delete('/delete_payment_type/:id')
     deletePaymentType(@Param('id') id: number) {
-        return this.deletePaymentType(id)
+        return this.paymentTypesService.deletePaymentType(id)
     }
 }
